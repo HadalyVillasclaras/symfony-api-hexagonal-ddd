@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Controller;
-use App\MyDashboard\Books
-;
+use App\MyDashboard\Books;
+use App\MyDashboard\Books\Application\AddBookRequest;
+use App\MyDashboard\Books\Application\AddBookService;
 use App\MyDashboard\Books\Domain\Book;
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
 use Doctrine\ORM\EntityManager;
@@ -45,42 +46,84 @@ class BookController extends AbstractController
     return $response;
   }
 
-  /**
-   * @Route("/books/create", name="books_create")
-   */
-  public function create(Request $request, EntityManagerInterface $entityManagerInterface) 
-  {
-    $book = new Book();
-    $title = $request->get('title', null);
+  // public function create(Request $request, EntityManagerInterface $entityManagerInterface): JsonResponse
+  // {
+  //   $book = new Book();
+  //   $title = $request->get('title', null);
    
 
-    $response = new JsonResponse();
-    if(empty($title)){
-      $response->setData([
-        'success' => false,
-        'error' => 'title cannot be empty',
-        'data' => null
-      ]);
-      return $response;
-    }
-    $book->setTitle($title);
-    $book->setAuthor('AUTOR');
-    $book->setLanguage('en');
-    $book->setPages(343);
-    $response->setData([
-      'success' => true,
-      "data" => [
-        [
-          'id' => $book->getId(),
-          'title' => $book->getTitle()
-        ]
-      ]
-    ]);
+  //   $response = new JsonResponse();
+  //   if(empty($title)){
+  //     $response->setData([
+  //       'success' => false,
+  //       'error' => 'title cannot be empty',
+  //       'data' => null
+  //     ]);
+  //     return $response;
+  //   }
+  //   $book->setTitle($title);
+  //   $book->setAuthor('AUTOR');
+  //   $book->setLanguage('en');
+  //   $book->setPages(343);
+  //   $response->setData([
+  //     'success' => true,
+  //     "data" => [
+  //       [
+  //         'id' => $book->getId(),
+  //         'title' => $book->getTitle()
+  //       ]
+  //     ]
+  //   ]);
 
-    $entityManagerInterface->persist($book);
-    $entityManagerInterface->flush();
+  //   $entityManagerInterface->persist($book);
+  //   $entityManagerInterface->flush();
 
 
-    return $response;
+  //   return $response;
+  // }
+
+
+  /**
+   * @Route("/books/create", name="books_create" methods={"POST"})
+   */
+  public function create(Request $request, AddBookService $addBookService) 
+  {
+
+    $requestParams = json_decode($request->getContent(), true);
+
+    $createBookRequestParams = [];
+    $createBookRequestParams['title'] =  $requestParams['title'] ?? null;
+    $createBookRequestParams['subtitle'] =  $requestParams['subtitle'] ?? null;
+    $createBookRequestParams['author'] =  $requestParams['author'] ?? null;
+    $createBookRequestParams['year'] =  $requestParams['year'] ?? null;
+    $createBookRequestParams['category'] =  $requestParams['category'] ?? null;
+    $createBookRequestParams['language'] =  $requestParams['language'] ?? null;
+    $createBookRequestParams['country'] =  $requestParams['country'] ?? null;
+    $createBookRequestParams['pages'] =  $requestParams['pages'] ?? null;
+    $createBookRequestParams['price'] =  $requestParams['price'] ?? null;
+    $createBookRequestParams['link'] =  $requestParams['link'] ?? null;
+    $createBookRequestParams['status'] =  $requestParams['status'] ?? null;
+    $createBookRequestParams['isbn'] =  $requestParams['isbn'] ?? null;
+    $createBookRequestParams['url'] =  $requestParams['url'] ?? null;
+    $createBookRequestParams['description'] =  $requestParams['description'] ?? null;
+
+    $createBookRequest = new AddBookRequest(
+      $createBookRequestParams['title'],
+      $createBookRequestParams['subtitle'],
+      $createBookRequestParams['author'],
+      $createBookRequestParams['year'],
+      $createBookRequestParams['category'],
+      $createBookRequestParams['language'],
+      $createBookRequestParams['country'],
+      $createBookRequestParams['pages'],
+      $createBookRequestParams['price'],
+      $createBookRequestParams['link'],
+      $createBookRequestParams['status'],
+      $createBookRequestParams['isbn'],
+      $createBookRequestParams['url'],
+      $createBookRequestParams['description']
+    );
+
+    $addBookService->execute($createBookRequest);
   }
 }

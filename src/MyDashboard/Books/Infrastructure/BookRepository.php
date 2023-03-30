@@ -17,10 +17,20 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BookRepository extends ServiceEntityRepository implements BookRepositoryInterface
 {
+    private $entityManager;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Book::class);
+        $this->entityManager = $this->getEntityManager();
     }
+
+    public function save(Book $book): void
+    {
+        $this->entityManager->persist($book);
+        $this->entityManager->flush();
+    }
+
 
     public function add(Book $entity, bool $flush = false): void
     {

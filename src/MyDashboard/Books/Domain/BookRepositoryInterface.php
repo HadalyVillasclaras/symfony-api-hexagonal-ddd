@@ -11,7 +11,7 @@ interface BookRepositoryInterface
 
     public function findAll();
 
-    // public function save(Book $book): void;
+    public function save(Book $book): void;
 
     // public function delete(Book $book): void;
 }
