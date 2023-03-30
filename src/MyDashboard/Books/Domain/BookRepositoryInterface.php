@@ -2,7 +2,6 @@
 
 namespace App\MyDashboard\Books\Domain;
 
-
 interface BookRepositoryInterface
 {
     public function findOneBy(array $criteria, ?array $orderBy = null);
