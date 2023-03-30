@@ -2,6 +2,8 @@
 
   namespace App\MyDashboard\Books\Application;
 
+use DateTime;
+
   class AddBookRequest
   {
     private $title;
@@ -19,14 +21,11 @@
     private $url;
     private $description;
 
-
-
-
     public function __construct(
       ?string $title,
       ?string $subtitle,
       ?string $author,
-      ?int $year,
+      ?string $year,
       ?string $category,
       ?string $language,
       ?string $country,
@@ -37,6 +36,7 @@
       ?string $isbn,
       ?string $url,
       ?string $description
+
     ) {
 
       $this->title = $title;
@@ -53,7 +53,9 @@
       $this->isbn = $isbn;
       $this->url = $url;
       $this->description = $description;
+
     }
+
    
     public function getTitle(): ?string
     {
@@ -70,7 +72,7 @@
         return $this->author;
     }
 
-    public function getYear(): ?\DateTimeInterface
+    public function getYear(): ?string
     {
         return $this->year;
     }

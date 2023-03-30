@@ -3,6 +3,7 @@
 namespace App\MyDashboard\Books\Domain;
 
 use App\Repository\BookRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -86,6 +87,41 @@ class Book
      * @ORM\Column(type="string", length=600, nullable=true)
      */
     private $description;
+
+    public function __construct(
+        ?string $title,
+        ?string $subtitle,
+        ?string $author,
+        ?DateTime $year,
+        ?string $category,
+        ?string $language,
+        ?string $country,
+        ?int $pages,
+        ?float $price,
+        ?string $link,
+        ?string $status,
+        ?string $isbn,
+        ?string $url,
+        ?string $description
+  
+      ) {
+  
+        $this->title = $title;
+        $this->subtitle = $subtitle;
+        $this->author = $author;
+        $this->year = $year;
+        $this->category = $category;
+        $this->language = $language;
+        $this->country = $country;
+        $this->pages = $pages;
+        $this->price = $price;
+        $this->link = $link;
+        $this->status = $status;
+        $this->isbn = $isbn;
+        $this->url = $url;
+        $this->description = $description;
+  
+      }
 
     public function getId(): ?int
     {

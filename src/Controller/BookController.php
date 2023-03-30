@@ -1,13 +1,9 @@
 <?php
 
 namespace App\Controller;
-use App\MyDashboard\Books;
 use App\MyDashboard\Books\Application\AddBookRequest;
 use App\MyDashboard\Books\Application\AddBookService;
-use App\MyDashboard\Books\Domain\Book;
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Error;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -46,51 +42,13 @@ class BookController extends AbstractController
     return $response;
   }
 
-  // public function create(Request $request, EntityManagerInterface $entityManagerInterface): JsonResponse
-  // {
-  //   $book = new Book();
-  //   $title = $request->get('title', null);
-   
-
-  //   $response = new JsonResponse();
-  //   if(empty($title)){
-  //     $response->setData([
-  //       'success' => false,
-  //       'error' => 'title cannot be empty',
-  //       'data' => null
-  //     ]);
-  //     return $response;
-  //   }
-  //   $book->setTitle($title);
-  //   $book->setAuthor('AUTOR');
-  //   $book->setLanguage('en');
-  //   $book->setPages(343);
-  //   $response->setData([
-  //     'success' => true,
-  //     "data" => [
-  //       [
-  //         'id' => $book->getId(),
-  //         'title' => $book->getTitle()
-  //       ]
-  //     ]
-  //   ]);
-
-  //   $entityManagerInterface->persist($book);
-  //   $entityManagerInterface->flush();
-
-
-  //   return $response;
-  // }
-
-
   /**
-   * @Route("/books/create", name="books_create" methods={"POST"})
+   * @Route("/books/create", name="books_create", methods={"POST"})
    */
   public function create(Request $request, AddBookService $addBookService) 
   {
-
     $requestParams = json_decode($request->getContent(), true);
-
+    print_r($requestParams);
     $createBookRequestParams = [];
     $createBookRequestParams['title'] =  $requestParams['title'] ?? null;
     $createBookRequestParams['subtitle'] =  $requestParams['subtitle'] ?? null;
@@ -106,6 +64,8 @@ class BookController extends AbstractController
     $createBookRequestParams['isbn'] =  $requestParams['isbn'] ?? null;
     $createBookRequestParams['url'] =  $requestParams['url'] ?? null;
     $createBookRequestParams['description'] =  $requestParams['description'] ?? null;
+    echo 'title:';
+    echo $createBookRequestParams['title'];
 
     $createBookRequest = new AddBookRequest(
       $createBookRequestParams['title'],

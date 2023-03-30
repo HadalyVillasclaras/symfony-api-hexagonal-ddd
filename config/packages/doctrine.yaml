@@ -10,7 +10,7 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
-            default:
+            App:
                 is_bundle: false
                 type: annotation
                 dir: '%kernel.project_dir%/src/Entity'
@@ -20,7 +20,8 @@ doctrine:
                 is_bundle: false
                 type: annotation
                 dir: '%kernel.project_dir%/src/MyDashboard/Books/Domain'
-                prefix: 'App\MyDashboard\Books'
+                prefix: 'App\MyDashboard\Books\Domain'
+                alias: Books
 when@test:
     doctrine:
         dbal:

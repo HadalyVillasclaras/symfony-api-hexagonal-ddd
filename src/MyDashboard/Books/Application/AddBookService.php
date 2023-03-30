@@ -4,6 +4,7 @@
 
 use App\MyDashboard\Books\Domain\Book;
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
+use DateTime;
 
   class AddBookService
   {
@@ -16,11 +17,14 @@ use App\MyDashboard\Books\Domain\BookRepositoryInterface;
 
     public function execute(AddBookRequest $addBookRequest)
     {
+      echo '******';
+      echo($addBookRequest->getTitle());
+      $date = new \DateTime($addBookRequest->getYear());
       $book = new Book(
         $addBookRequest->getTitle(),
         $addBookRequest->getSubtitle(),
         $addBookRequest->getAuthor(),
-        $addBookRequest->getYear(),
+        $date,
         $addBookRequest->getCategory(),
         $addBookRequest->getLanguage(),
         $addBookRequest->getCountry(),
@@ -32,7 +36,8 @@ use App\MyDashboard\Books\Domain\BookRepositoryInterface;
         $addBookRequest->getUrl(),
         $addBookRequest->getDescription()
       );
-
+      print_r($book);
+      
       $this->bookRepository->save($book);
 
       return $book;
