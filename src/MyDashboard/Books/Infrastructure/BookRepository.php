@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Repository;
+namespace App\MyDashboard\Books\Infrastructure;
 
-use App\Entity\Book;
+use App\MyDashboard\Books\Domain\Book;
+use App\MyDashboard\Books\Domain\BookRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Book[]    findAll()
  * @method Book[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class BookRepository extends ServiceEntityRepository
+class BookRepository extends ServiceEntityRepository implements BookRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

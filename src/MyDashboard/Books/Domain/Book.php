@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\MyDashboard\Books\Domain;
 
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
