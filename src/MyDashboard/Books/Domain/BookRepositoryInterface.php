@@ -12,5 +12,5 @@ interface BookRepositoryInterface
 
     public function save(Book $book): void;
 
-    // public function delete(Book $book): void;
+    public function delete(Book $book): void;
 }

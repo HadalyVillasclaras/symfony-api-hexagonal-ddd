@@ -3,7 +3,9 @@
 namespace App\Controller;
 use App\MyDashboard\Books\Application\AddBookRequest;
 use App\MyDashboard\Books\Application\AddBookService;
+use App\MyDashboard\Books\Application\GetBooksService;
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
+use App\Ruralidays\Shared\Application\ApiResponse;
 use Error;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -20,11 +22,14 @@ class BookController extends AbstractController
   /**
    * @Route("/books", name="books_get_all", methods={"GET"})
    */
-  public function getAll(Request $request, BookRepositoryInterface $bookRepositoryInterface): Response
-  {  
-    $title = $request->get('title', 'Cumbres');
-    $books = $bookRepositoryInterface->findAll();
-    $booksArray = [];
+  public function getAll(GetBooksService $getBooksService): Response
+  {
+    $apiResponse = new ApiResponse();
+    
+    $books = $getBooksService->execute();
+
+    $apiResponse->setData($books);
+
     foreach ($books as $book) {
       $booksArray[] = [
         'id' => $book->getId(),
@@ -34,13 +39,52 @@ class BookController extends AbstractController
         'pages' => $book->getPages()
       ];
     }
-    $response = new JsonResponse();
-    $response->setData([
-      'success' => 'true',
-      'data' => $booksArray
-    ]);
-    return $response;
+
+    return $this->json($apiResponse->getOutput());
+    // $booksArray = [];
+
+    // foreach ($books as $book) {
+    //   $booksArray[] = [
+    //     'id' => $book->getId(),
+    //     'title' => $book->getTitle(),
+    //     'author' => $book->getAuthor(),
+    //     'language' => $book->getLanguage(),
+    //     'pages' => $book->getPages()
+    //   ];
+    // }
+
+    // $response = new JsonResponse();
+    // $response->setData([
+    //   'success' => 'true',
+    //   'data' => $booksArray
+    // ]);
+    // return $response;
   }
+
+  // public function getAll(Request $request, BookRepositoryInterface $bookRepositoryInterface): Response
+  // {  
+
+
+
+  //   $title = $request->get('title', 'Cumbres');
+  //   $books = $bookRepositoryInterface->findAll();
+  //   $booksArray = [];
+  //   foreach ($books as $book) {
+  //     $booksArray[] = [
+  //       'id' => $book->getId(),
+  //       'title' => $book->getTitle(),
+  //       'author' => $book->getAuthor(),
+  //       'language' => $book->getLanguage(),
+  //       'pages' => $book->getPages()
+  //     ];
+  //   }
+  //   $response = new JsonResponse();
+  //   $response->setData([
+  //     'success' => 'true',
+  //     'data' => $booksArray
+  //   ]);
+  //   return $response;
+  // }
 
   /**
    * @Route("/books/create", name="books_create", methods={"POST"})

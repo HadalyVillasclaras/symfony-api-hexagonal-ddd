@@ -50,6 +50,11 @@ class BookRepository extends ServiceEntityRepository implements BookRepositoryIn
         }
     }
 
+    public function delete(Book $book): void
+    {
+        $this->entityManager->remove($book);
+        $this->entityManager->flush();
+    }
 //    /**
 //     * @return Book[] Returns an array of Book objects
 //     */
