@@ -1,4 +1,4 @@
-## :satellite: DDD API implementing Hexagonal & Clean Architecture
+## :satellite: DDD API with Hexagonal & Clean Architecture
 
 Books Library API crafted with Symfony and applying Clean Architecture principles such as Hexagonal(Ports and Adapters) Architecture, Vertical Slicing and Screaming Architecture, while implementing Domain-Driven Design (DDD) software approach.
  
