@@ -17,8 +17,6 @@ use DateTime;
 
     public function execute(AddBookRequest $addBookRequest)
     {
-      echo '******';
-      echo($addBookRequest->getTitle());
       $date = new \DateTime($addBookRequest->getYear());
       $book = new Book(
         $addBookRequest->getTitle(),
@@ -36,7 +34,6 @@ use DateTime;
         $addBookRequest->getUrl(),
         $addBookRequest->getDescription()
       );
-      print_r($book);
       
       $this->bookRepository->save($book);
 

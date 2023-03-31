@@ -103,7 +103,6 @@ class Book
         ?string $isbn,
         ?string $url,
         ?string $description
-  
       ) {
   
         $this->title = $title;
@@ -122,6 +121,28 @@ class Book
         $this->description = $description;
   
       }
+
+
+    public function __toArray(): array
+    {
+        return [
+            'id' => $this->getId(), 
+            'title' => $this->getTitle(),
+            'subtitle' => $this->getSubtitle(),
+            'author' => $this->getAuthor(),
+            'year' => $this->getYear(),
+            'category' => $this->getCategory(),
+            'language' => $this->getLanguage(),
+            'country' => $this->getCountry(),
+            'pages' => $this->getPages(),
+            'price' => $this->getPrice(),
+            'link' => $this->getLink(),
+            'status' => $this->getStatus(),
+            'isbn' => $this->getIsbn(),
+            'url' => $this->getUrl(),
+            'description' => $this->getDescription()
+        ];
+    }
 
     public function getId(): ?int
     {

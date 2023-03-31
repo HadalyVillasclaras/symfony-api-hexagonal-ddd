@@ -40,7 +40,7 @@ use DateTime;
       ?string $description
 
     ) {
-
+      $this->id = $id;
       $this->title = $title;
       $this->subtitle = $subtitle;
       $this->author = $author;
