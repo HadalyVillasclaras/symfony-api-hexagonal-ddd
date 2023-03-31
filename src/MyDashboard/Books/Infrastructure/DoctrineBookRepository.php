@@ -15,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Book[]    findAll()
  * @method Book[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class BookRepository extends ServiceEntityRepository implements BookRepositoryInterface
+class DoctrineBookRepository extends ServiceEntityRepository implements BookRepositoryInterface
 {
     private $entityManager;
 

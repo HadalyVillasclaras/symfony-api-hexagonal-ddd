@@ -2,12 +2,12 @@
 
 namespace App\MyDashboard\Books\Domain;
 
-use App\Repository\BookRepository;
+use App\Repository\DoctrineBookRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=BookRepository::class)
+ * @ORM\Entity(repositoryClass=DoctrineBookRepository::class)
  */
 class Book
 {
