@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ruralidays\Shared\Application;
+namespace App\MyDashboard\Shared\Application;
 
 class ApiResponse
 {
