@@ -63,7 +63,7 @@ class BookController extends AbstractController
   }
 
   /**
-   * @Route("/books/create", name="books_create", methods={"POST"})
+   * @Route("/books", name="books_create", methods={"POST"})
    */
   public function create(Request $request, AddBookService $addBookService) 
   {
