@@ -4,6 +4,7 @@
 
 use App\MyDashboard\Books\Domain\Book;
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
+use App\MyDashboard\Shared\Domain\ValueObject\Language;
 use DateTime;
 
   class AddBookService
@@ -18,13 +19,18 @@ use DateTime;
     public function execute(AddBookRequest $addBookRequest)
     {
       $date = new \DateTime($addBookRequest->getYear());
+
+      $language = (!empty($addBookRequest->getLanguage()))
+        ? new Language($addBookRequest->getLanguage())
+        : null;
+
       $book = new Book(
         $addBookRequest->getTitle(),
         $addBookRequest->getSubtitle(),
         $addBookRequest->getAuthor(),
         $date,
         $addBookRequest->getCategory(),
-        $addBookRequest->getLanguage(),
+        $language->getLanguage(),
         $addBookRequest->getCountry(),
         $addBookRequest->getPages(),
         $addBookRequest->getPrice(),
