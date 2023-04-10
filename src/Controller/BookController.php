@@ -10,11 +10,11 @@ use App\MyDashboard\Books\Application\GetBookService;
 use App\MyDashboard\Books\Application\GetBooksService;
 use App\MyDashboard\Books\Application\UpdateBookRequest;
 use App\MyDashboard\Books\Application\UpdateBookService;
-use App\MyDashboard\Books\Domain\BookRepositoryInterface;
 use App\Ruralidays\Shared\Application\ApiResponse;
 use Error;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,37 +29,46 @@ class BookController extends AbstractController
   public function getAll(GetBooksService $getBooksService): Response
   {
     $apiResponse = new ApiResponse();
+    $response = new JsonResponse();
+
     try {
       $books = $getBooksService->execute();
       $apiResponse->setData($books);
+      $response->setStatusCode(Response::HTTP_OK);
     } catch (Exception $e) {
       $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_BAD_REQUEST);
     } catch (Error $e) {
       $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-    return $this->json($apiResponse->getApiResponse());
+    $response->setData($apiResponse->getApiResponse());
+    return $response;
   }
 
   /**
    * @Route("books/{id}", name="books_get", methods={"GET"})
    */
-  public function getById(GetBookService $geBookService, int $id): Response
+  public function getById(GetBookService $geBookService, int $id): JsonResponse
   {
       $apiResponse = new ApiResponse();
+      $response = new JsonResponse();
 
       try {
           $getBookRequest = new GetBookRequest($id);
-
           $book = $geBookService->execute($getBookRequest);
-
           $apiResponse->setData($book->__toArray());
+          $response->setStatusCode(Response::HTTP_OK);
       }catch(Exception $e){
           $apiResponse->setError($e->getMessage(), $e->getCode());
+          $response->setStatusCode(Response::HTTP_BAD_REQUEST);
       } catch (Error $e) {
           $apiResponse->setError($e->getMessage(), $e->getCode());
+          $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
       }
 
-      return $this->json($apiResponse->getApiResponse());
+      $response->setData($apiResponse->getApiResponse());
+      return $response;
   }
 
   /**
@@ -68,6 +77,7 @@ class BookController extends AbstractController
   public function create(Request $request, AddBookService $addBookService) 
   {
     $apiResponse = new ApiResponse();
+    $response = new JsonResponse();
 
     try {
       $requestParams = json_decode($request->getContent(), true);
@@ -107,13 +117,17 @@ class BookController extends AbstractController
   
       $book = $addBookService->execute($createBookRequest);
       $apiResponse->setData($book->__toArray());
+      $response->setStatusCode(Response::HTTP_OK);
     } catch (Exception $e) {
       $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_BAD_REQUEST);
     } catch (Error $e) {
       $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    return $this->json($apiResponse->getApiResponse());
+    $response->setData($apiResponse->getApiResponse());
+    return $response;
   }
 
   /**
@@ -122,6 +136,7 @@ class BookController extends AbstractController
   public function update(Request $request, UpdateBookService $updateBookService, int $id): Response
   {
     $apiResponse = new ApiResponse();
+    $response = new JsonResponse();
 
     try {
       $requestParams = json_decode($request->getContent(), true);
@@ -162,13 +177,18 @@ class BookController extends AbstractController
   
       $book = $updateBookService->execute($updateBookRequest);
       $apiResponse->setData($book->__toArray());
+      $response->setStatusCode(Response::HTTP_OK);
+
     } catch (Exception $e) {
       $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_BAD_REQUEST);
     } catch (Error $e) {
       $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    return $this->json($apiResponse->getApiResponse());
+    $response->setData($apiResponse->getApiResponse());
+    return $response;
   }
 
 
@@ -178,16 +198,21 @@ class BookController extends AbstractController
   public function delete(DeleteBookService $deleteBookService, int $id): Response
   {
       $apiResponse = new ApiResponse();
+      $response = new JsonResponse();
 
       try {
           $deleteBookRequest = new DeleteBookRequest($id);
           $deleteBookService->execute($deleteBookRequest);
+          $response->setStatusCode(Response::HTTP_OK);
       } catch (Exception $e) {
           $apiResponse->setError($e->getMessage(), $e->getCode());
+          $response->setStatusCode(Response::HTTP_BAD_REQUEST);
       } catch (Error $e) {
           $apiResponse->setError($e->getMessage(), $e->getCode());
+          $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
       }
 
-      return $this->json($apiResponse->getApiResponse());
+      $response->setData($apiResponse->getApiResponse());
+      return $response;
   }
 }
