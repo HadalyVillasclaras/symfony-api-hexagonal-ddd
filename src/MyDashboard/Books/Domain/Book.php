@@ -92,7 +92,7 @@ class Book
         ?string $title,
         ?string $subtitle,
         ?string $author,
-        ?DateTime $year,
+        ?int $year,
         ?string $category,
         ?string $language,
         ?string $country,
@@ -185,12 +185,12 @@ class Book
         return $this;
     }
 
-    public function getYear(): ?\DateTimeInterface
+    public function getYear(): ?int
     {
         return $this->year;
     }
 
-    public function setYear(?\DateTimeInterface $year): self
+    public function setYear(?int $year): self
     {
         $this->year = $year;
 

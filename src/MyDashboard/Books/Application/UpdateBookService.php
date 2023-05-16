@@ -4,7 +4,6 @@
 
 use App\MyDashboard\Books\Domain\Book;
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
-use DateTime;
 
   class UpdateBookService
   {
@@ -19,12 +18,10 @@ use DateTime;
     {
       $book = $this->bookRepository->findOneBy(['id' => $updateBookRequest->getId()]);
 
-      $date = new \DateTime($updateBookRequest->getYear());
-
       $book->setTitle($updateBookRequest->getTitle());
       $book->setSubtitle($updateBookRequest->getSubtitle());
       $book->setAuthor($updateBookRequest->getAuthor());
-      $book->setYear($date);
+      $book->setYear($updateBookRequest->getYear());
       $book->setCategory($updateBookRequest->getCategory());
       $book->setLanguage($updateBookRequest->getLanguage());
       $book->setCountry($updateBookRequest->getCountry());

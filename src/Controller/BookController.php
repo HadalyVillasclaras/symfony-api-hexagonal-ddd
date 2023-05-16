@@ -39,6 +39,7 @@ class BookController extends AbstractController
     try {
       $booksResponse = $getBooksService->execute();
       $apiResponse->setData($booksResponse);
+
       $response->setStatusCode(Response::HTTP_OK);
     } catch (Exception $e) {
       $apiResponse->setError($e->getMessage(), $e->getCode());

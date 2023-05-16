@@ -18,7 +18,6 @@ use DateTime;
 
     public function execute(AddBookRequest $addBookRequest)
     {
-      $date = new \DateTime($addBookRequest->getYear());
 
       $language = (!empty($addBookRequest->getLanguage()))
         ? new Language($addBookRequest->getLanguage())
@@ -28,7 +27,7 @@ use DateTime;
         $addBookRequest->getTitle(),
         $addBookRequest->getSubtitle(),
         $addBookRequest->getAuthor(),
-        $date,
+        $addBookRequest->getYear(),
         $addBookRequest->getCategory(),
         $language->getLanguage(),
         $addBookRequest->getCountry(),
