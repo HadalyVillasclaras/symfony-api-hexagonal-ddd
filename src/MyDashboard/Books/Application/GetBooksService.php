@@ -7,6 +7,7 @@ use App\MyDashboard\Books\Domain\BookRepositoryInterface;
 class GetBooksService 
 {
   protected $bookRepository;
+  private array $bookResponse;
 
   public function __construct(BookRepositoryInterface $bookRepository)
   {
@@ -15,9 +16,14 @@ class GetBooksService
 
   public function execute()
   {
-    $books = $this->bookRepository->findAll();
-    
-    return $books;
+    $books = $this->bookRepository->findBy(10, );
+    $bookResponse['data'] = $books;
+    $bookResponse['pagination'] = [
+      'totalFound' => count($bookResponse['data']),
+      'dataPerPage' => 10
+    ];
+
+    return $bookResponse;
   }
   
 }

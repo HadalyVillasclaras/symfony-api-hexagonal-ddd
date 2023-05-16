@@ -52,6 +52,4 @@ class Language
     {
         return $this->language;
     }
-
-
 }

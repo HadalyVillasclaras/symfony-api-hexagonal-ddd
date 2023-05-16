@@ -5,11 +5,13 @@ namespace App\MyDashboard\Shared\Application;
 class ApiResponse
 {
     private array $data;
+    private array $pagination;
     private array $error;
 
     public function __construct()
     {
         $this->data = [];
+        $this->pagination = [];
         $this->error = [];
     }
 
@@ -22,6 +24,18 @@ class ApiResponse
     public function getData() : array
     {
         return $this->data;
+    }
+
+    public function setPagination(string $key, $value): ApiResponse
+    {
+        $this->pagination[$key] = $value;
+
+        return $this;
+    }
+
+    public function getPagination(): array
+    {
+        return $this->pagination;
     }
 
     public function getError() : array
@@ -48,7 +62,10 @@ class ApiResponse
             $apiResponse['error'] = $error;
         } else {
             $data = $this->getData();
+            $pagination = $this->getPagination();
             $apiResponse['data'] = $data;
+            $apiResponse['pagination'] = $pagination;
+
 
             if (isset($apiResponse['data'][0])) {
                 foreach($apiResponse['data'] as $key => $data) {

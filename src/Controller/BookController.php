@@ -8,10 +8,12 @@ use App\MyDashboard\Books\Application\DeleteBookRequest;
 use App\MyDashboard\Books\Application\DeleteBookService;
 use App\MyDashboard\Books\Application\GetBookRequest;
 use App\MyDashboard\Books\Application\GetBookService;
+use App\MyDashboard\Books\Application\GetBooksRequest;
 use App\MyDashboard\Books\Application\GetBooksService;
 use App\MyDashboard\Books\Application\UpdateBookRequest;
 use App\MyDashboard\Books\Application\UpdateBookService;
 use App\MyDashboard\Shared\Application\ApiResponse;
+use App\MyDashboard\Shared\Domain\Paginator;
 use Error;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,14 +29,22 @@ class BookController extends AbstractController
   /**
    * @Route("/books", name="books_get_all", methods={"GET"})
    */
-  public function getAll(GetBooksService $getBooksService): Response
+  public function getAll(GetBooksService $getBooksService, Request $request): Response
   {
     $apiResponse = new ApiResponse();
     $response = new JsonResponse();
 
     try {
-      $books = $getBooksService->execute();
-      $apiResponse->setData($books);
+      $page = (int) $request->get('page') ?? 1;
+
+      $booksResponse = $getBooksService->execute();
+      $paginatorResponse = $booksResponse['pagination'];
+      $paginator = new Paginator($paginatorResponse['totalFound'], $paginatorResponse['dataPerPage'], $page);
+      $apiResponse->setData($booksResponse['data']);
+
+      foreach ($paginator->getPaginationData() as $key => $value) {
+        $apiResponse->setPagination($key, $value);
+    }
       $response->setStatusCode(Response::HTTP_OK);
     } catch (Exception $e) {
       $apiResponse->setError($e->getMessage(), $e->getCode());
@@ -45,6 +55,48 @@ class BookController extends AbstractController
     }
     $response->setData($apiResponse->getApiResponse());
     return $response;
+  }
+
+  /**
+   * @Route("/books/search/", name="books_search", methods={"GET","POST"})
+   */
+  public function search(GetBooksService $getBooksService, Request $request): Response
+  {
+      $apiResponse = new ApiResponse();
+      $response = new JsonResponse();
+
+      try {
+          if ($request->getMethod() == 'POST') {
+              $requestParams = json_decode($request->getContent(), true);
+              $page = $requestParams['page'] ?? 1;
+
+          } else {
+              $page = (int) $request->get('page') ?? 1;
+          }
+
+          $getBooksRequest = new GetBooksRequest();
+          $getBooksResponse = $getBooksService->execute();
+
+
+          $paginator = new Paginator($getReviewsResponse['totalFound'], $getReviewsResponse['size'], $page);
+          $links = $paginator->getLinks($this->container->get('router'), 'api_reviews_list', $urlQueryParams);
+
+          $apiResponse->setData($getBooksResponse['data']); //$getReviewsResponse['data']
+
+          foreach ($paginator->getPaginationData() as $key => $value) {
+              $apiResponse->setPagination($key, $value);
+          }
+
+          $response->setStatusCode(Response::HTTP_OK);
+        }catch(Exception $e){
+          $apiResponse->setError($e->getMessage(), $e->getCode());
+          $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+      } catch (Error $e) {
+          $apiResponse->setError($e->getMessage(), $e->getCode());
+          $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+      }
+      $response->setData($apiResponse->getApiResponse());
+      return $response;
   }
 
   /**
