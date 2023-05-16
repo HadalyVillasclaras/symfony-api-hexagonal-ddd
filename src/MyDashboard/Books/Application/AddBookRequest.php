@@ -25,7 +25,7 @@ use DateTime;
       ?string $title,
       ?string $subtitle,
       ?string $author,
-      ?string $year,
+      ?int $year,
       ?string $category,
       ?string $language,
       ?string $country,
@@ -72,7 +72,7 @@ use DateTime;
         return $this->author;
     }
 
-    public function getYear(): ?string
+    public function getYear(): ?int
     {
         return $this->year;
     }

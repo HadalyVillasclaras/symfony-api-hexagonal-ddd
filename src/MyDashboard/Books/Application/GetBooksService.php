@@ -17,14 +17,8 @@ class GetBooksService
   public function execute()
   {
     $books = $this->bookRepository->findAll();
-
-    $bookResponse['data'] = $books;
-    $bookResponse['pagination'] = [
-      'totalFound' => count($bookResponse['data']),
-      'dataPerPage' => 10
-    ];
-
-    return $bookResponse;
+  
+    return $books;
   }
   
 }

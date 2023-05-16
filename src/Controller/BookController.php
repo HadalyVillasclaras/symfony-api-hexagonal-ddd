@@ -37,19 +37,8 @@ class BookController extends AbstractController
     $response = new JsonResponse();
 
     try {
-      $page = (int) $request->get('page') ?? 1;
-
       $booksResponse = $getBooksService->execute();
-
-      $paginatorResponse = $booksResponse['pagination'];
-
-      $paginator = new Paginator($paginatorResponse['totalFound'], $paginatorResponse['dataPerPage'], $page);
-
-      $apiResponse->setData($booksResponse['data']);
-
-      foreach ($paginator->getPaginationData() as $key => $value) {
-        $apiResponse->setPagination($key, $value);
-    }
+      $apiResponse->setData($booksResponse);
       $response->setStatusCode(Response::HTTP_OK);
     } catch (Exception $e) {
       $apiResponse->setError($e->getMessage(), $e->getCode());
@@ -70,24 +59,25 @@ class BookController extends AbstractController
       $apiResponse = new ApiResponse();
       $response = new JsonResponse();
       $searchCriteria = [];
+      $page = 1;
 
       try {
           if ($request->getMethod() == 'POST') {
               $requestParams = json_decode($request->getContent(), true);
-              $page = $requestParams['page'] ?? 1;
+              $page = isset($requestParams['page']) ? (int) $requestParams['page'] : 1; 
               $searchCriteria = $requestParams;
 
           } else {
-              $page = (int) $request->get('page') ?? 1;
+              $page = isset($requestParams['page']) ? (int) $requestParams['page'] : 1; 
+              $searchCriteria = $request->query->all();
           }
 
           $searchBooksRequest = new SearchBooksRequest($searchCriteria);
           $searchBooksResponse = $searchBooksService->execute($searchBooksRequest);
 
           $paginator = new Paginator($searchBooksResponse['totalFound'], $searchBooksResponse['limit'], $page);
-          // $links = $paginator->getLinks($this->container->get('router'), 'books_search', $page);
 
-          $apiResponse->setData($searchBooksResponse['data']); //$getReviewsResponse['data']
+          $apiResponse->setData($searchBooksResponse['data']);
 
           foreach ($paginator->getPaginationData() as $key => $value) {
               $apiResponse->setPagination($key, $value);

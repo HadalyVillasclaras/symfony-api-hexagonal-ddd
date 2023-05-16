@@ -95,7 +95,77 @@ class DoctrineBookRepository extends ServiceEntityRepository implements BookRepo
     }
 
 
-  
+    public function findByCriteriaLegacy(Criteria $searchCriteria): ?array
+    {
+        $result = [
+            'totalFound' => 0,
+            'start' => 0,
+            'size' => 0,
+            'data' => []
+        ];
+
+        $queryBuilder = $this->entityManager
+            ->createQueryBuilder()
+            ->select('book')
+            ->from('App\MyDashboard\Books\Domain\Book', 'book');
+
+        // Join only entities/tables needed to improve performance
+        $entitiesToJoin = [];
+
+        if (strpos($searchCriteria->getOrder()->getOrderBy(), ".") !== false) {
+            $entityToJoin = substr($searchCriteria->getOrder()->getOrderBy(), 0, strpos($searchCriteria->getOrder()->getOrderBy(), "."));
+            if (!in_array($entityToJoin, $entitiesToJoin)) {
+                $entitiesToJoin[] = substr($searchCriteria->getOrder()->getOrderBy(), 0, strpos($searchCriteria->getOrder()->getOrderBy(), "."));
+            }
+        }
+
+        foreach ($searchCriteria->getFilterGroups() as $filters) {
+            foreach ($filters as $filter) {
+                if (strpos($filter->getField(), ".") !== false) {
+                    $entityToJoin = substr($filter->getField(), 0, strpos($filter->getField(), "."));
+                    if (!in_array($entityToJoin, $entitiesToJoin)) {
+                        $entitiesToJoin[] = substr($filter->getField(), 0, strpos($filter->getField(), "."));
+                    }
+                }
+            }
+        }
+
+        if (!empty($entitiesToJoin)) {
+            $queryBuilder->distinct();
+        }
+
+        if ($searchCriteria->getAggregations()->count() > 0) {
+            foreach ($searchCriteria->getAggregations() as $agg) {
+                if (strpos($agg->getField(), ".") !== false) {
+                    $entityToJoin = substr($agg->getField(), 0, strpos($agg->getField(), "."));
+                    if (!in_array($entityToJoin, $entitiesToJoin)) {
+                        $entitiesToJoin[] = substr($agg->getField(), 0, strpos($agg->getField(), "."));
+                    }
+                }
+            }
+        }
+
+        $queryBuilder = (new CriteriaConverter($queryBuilder, 'book'))
+            ->setCriteria($searchCriteria)
+            ->convert();
+
+        $query = $queryBuilder->getQuery();
+
+        $results = $query->getResult();
+        $start = $query->getFirstResult();
+        $size = $query->getMaxResults();
+
+        $paginator = new Paginator($query);
+
+        $totalResults = $paginator->count();
+
+        $result['data'] = $results;
+        $result['start'] = $start;
+        $result['size'] = $size;
+        $result['totalFound'] = $totalResults;
+
+        return $result;
+    }
 
 
 

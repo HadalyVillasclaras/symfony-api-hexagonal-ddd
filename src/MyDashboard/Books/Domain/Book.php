@@ -34,7 +34,7 @@ class Book
     private $author;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="integer")
      */
     private $year;
 
