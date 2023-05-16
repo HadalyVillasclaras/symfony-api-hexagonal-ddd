@@ -1,6 +1,6 @@
 <?php
 
-namespace App\MyDashboard\Shared;
+namespace App\MyDashboard\Shared\Utils;
 
 class ApiResponse
 {

@@ -2,8 +2,6 @@
 
 namespace App\MyDashboard\Books\Domain;
 
-use App\Repository\DoctrineBookRepository;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

@@ -2,7 +2,6 @@
 
   namespace App\MyDashboard\Books\Application;
 
-use App\MyDashboard\Books\Domain\Book;
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
 
   class UpdateBookService

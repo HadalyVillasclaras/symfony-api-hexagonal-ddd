@@ -1,6 +1,7 @@
 <?php
 
-namespace App\MyDashboard\Shared\Domain;
+namespace App\MyDashboard\Shared\Utils;
+
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 

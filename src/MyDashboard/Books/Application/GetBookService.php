@@ -19,5 +19,4 @@ class GetBookService
     
     return $book;
   }
-  
 }

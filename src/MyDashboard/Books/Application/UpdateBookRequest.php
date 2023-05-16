@@ -2,8 +2,6 @@
 
   namespace App\MyDashboard\Books\Application;
 
-use DateTime;
-
   class UpdateBookRequest
   {
     private $id;

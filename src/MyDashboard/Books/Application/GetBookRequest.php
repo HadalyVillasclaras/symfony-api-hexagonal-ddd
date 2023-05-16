@@ -2,8 +2,6 @@
 
 namespace App\MyDashboard\Books\Application;
 
-use App\MyDashboard\Books\Domain\BookRepositoryInterface;
-
 class GetBookRequest
 {
   private $id;
@@ -18,5 +16,4 @@ class GetBookRequest
   {
       return $this->id;
   }
-
 }

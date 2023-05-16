@@ -1,11 +1,9 @@
 <?php
 
-  namespace App\MyDashboard\Books\Application;
+namespace App\MyDashboard\Books\Application;
 
-use DateTime;
-
-  class AddBookRequest
-  {
+class AddBookRequest
+{
     private $title;
     private $subtitle;
     private $author;
@@ -22,41 +20,40 @@ use DateTime;
     private $description;
 
     public function __construct(
-      ?string $title,
-      ?string $subtitle,
-      ?string $author,
-      ?int $year,
-      ?string $category,
-      ?string $language,
-      ?string $country,
-      ?int $pages,
-      ?float $price,
-      ?string $link,
-      ?string $status,
-      ?string $isbn,
-      ?string $url,
-      ?string $description
+        ?string $title,
+        ?string $subtitle,
+        ?string $author,
+        ?int $year,
+        ?string $category,
+        ?string $language,
+        ?string $country,
+        ?int $pages,
+        ?float $price,
+        ?string $link,
+        ?string $status,
+        ?string $isbn,
+        ?string $url,
+        ?string $description
 
     ) {
 
-      $this->title = $title;
-      $this->subtitle = $subtitle;
-      $this->author = $author;
-      $this->year = $year;
-      $this->category = $category;
-      $this->language = $language;
-      $this->country = $country;
-      $this->pages = $pages;
-      $this->price = $price;
-      $this->link = $link;
-      $this->status = $status;
-      $this->isbn = $isbn;
-      $this->url = $url;
-      $this->description = $description;
-
+        $this->title = $title;
+        $this->subtitle = $subtitle;
+        $this->author = $author;
+        $this->year = $year;
+        $this->category = $category;
+        $this->language = $language;
+        $this->country = $country;
+        $this->pages = $pages;
+        $this->price = $price;
+        $this->link = $link;
+        $this->status = $status;
+        $this->isbn = $isbn;
+        $this->url = $url;
+        $this->description = $description;
     }
 
-   
+
     public function getTitle(): ?string
     {
         return $this->title;
@@ -126,4 +123,4 @@ use DateTime;
     {
         return $this->description;
     }
-  }
+}

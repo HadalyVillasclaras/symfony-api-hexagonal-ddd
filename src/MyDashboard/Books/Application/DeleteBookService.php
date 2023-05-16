@@ -17,12 +17,7 @@ class DeleteBookService
   {
     $book = $this->bookRepository->findOneBy(['id' => $deleteBookRequest->getId()]);
     
-    // if ($book == null) {
-    //   throw new BookNotFoundException();
-    // }
-
     $this->bookRepository->delete($book);
     return $book;
   }
-  
 }
