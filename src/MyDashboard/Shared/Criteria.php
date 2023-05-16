@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Ruralidays\Shared\Domain\SearchCriteria;
+namespace App\MyDashboard\Shared;
+
 
 use Exception;
 use InvalidArgumentException;

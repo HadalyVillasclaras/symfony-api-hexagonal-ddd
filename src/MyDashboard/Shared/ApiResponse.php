@@ -1,6 +1,6 @@
 <?php
 
-namespace App\MyDashboard\Shared\Application;
+namespace App\MyDashboard\Shared;
 
 class ApiResponse
 {
@@ -63,8 +63,8 @@ class ApiResponse
         } else {
             $data = $this->getData();
             $pagination = $this->getPagination();
-            $apiResponse['data'] = $data;
             $apiResponse['pagination'] = $pagination;
+            $apiResponse['data'] = $data;
 
 
             if (isset($apiResponse['data'][0])) {

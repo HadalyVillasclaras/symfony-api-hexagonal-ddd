@@ -20,34 +20,14 @@ class Paginator
         $this->totalPages = 0;
         $this->pageNumbers = [];
 
-        $this->setData();
+        $this->setPaginationData();
     }
 
-    private function setData(): void
+    private function setPaginationData(): void
     {
-        if ($this->dataPerPage > 0) {
-            $this->totalPages = ceil($this->dataCount / $this->dataPerPage);
-        }
-
-        if ($this->currentPage > $this->totalPages) {
-            $this->currentPage = $this->totalPages;
-        }
-
-        if ($this->currentPage < 1) {
-            $this->currentPage = 1;
-        }
-
-        $this->pageNumbers["self"] = $this->currentPage;
-
-        if ($this->currentPage > 1) {
-            $this->pageNumbers["first"] = 1;
-            $this->pageNumbers["prev"] = $this->currentPage - 1;
-        }
-
-        if ($this->currentPage + 1 <= $this->totalPages) {
-            $this->pageNumbers["next"] = $this->currentPage + 1;
-            $this->pageNumbers["last"] = $this->totalPages;
-        }
+        $this->calculateTotalPages();
+        $this->adjustCurrentPage();
+        $this->calculatePageNumbers();
     }
 
     public function getPaginationData(): array
@@ -60,6 +40,37 @@ class Paginator
         ];
     }
 
+    private function calculateTotalPages(): void
+    {
+        $this->totalPages = $this->dataPerPage > 0 ? ceil($this->dataCount / $this->dataPerPage) : 0;
+    }
+
+    private function calculatePageNumbers(): void
+    {
+        $this->pageNumbers["currentPage"] = $this->currentPage;
+
+        if ($this->currentPage > 1) {
+            $this->pageNumbers["first"] = 1;
+            $this->pageNumbers["prev"] = $this->currentPage - 1;
+        }
+
+        if ($this->currentPage + 1 <= $this->totalPages) {
+            $this->pageNumbers["next"] = $this->currentPage + 1;
+            $this->pageNumbers["last"] = $this->totalPages;
+        }
+    }
+    
+    private function adjustCurrentPage(): void
+    {
+        if ($this->currentPage > $this->totalPages) {
+            $this->currentPage = $this->totalPages;
+        }
+
+        if ($this->currentPage < 1) {
+            $this->currentPage = 1;
+        }
+    }
+
     public function getPageNumbers(): array
     {
         return $this->pageNumbers;
@@ -70,7 +81,7 @@ class Paginator
         $links = [];
 
         foreach ($this->pageNumbers as $linkName => $pageNumber) {
-            $urlQueryParams["page"] = $pageNumber;
+            $urlQueryParams = $pageNumber;
             $links[$linkName] = $router->generate($routeName, $urlQueryParams, $linksAbsolutePath);
         }
 

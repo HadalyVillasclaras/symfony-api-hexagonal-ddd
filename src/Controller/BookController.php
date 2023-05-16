@@ -10,9 +10,11 @@ use App\MyDashboard\Books\Application\GetBookRequest;
 use App\MyDashboard\Books\Application\GetBookService;
 use App\MyDashboard\Books\Application\GetBooksRequest;
 use App\MyDashboard\Books\Application\GetBooksService;
+use App\MyDashboard\Books\Application\SearchBooksRequest;
+use App\MyDashboard\Books\Application\SearchBooksService;
 use App\MyDashboard\Books\Application\UpdateBookRequest;
 use App\MyDashboard\Books\Application\UpdateBookService;
-use App\MyDashboard\Shared\Application\ApiResponse;
+use App\MyDashboard\Shared\ApiResponse;
 use App\MyDashboard\Shared\Domain\Paginator;
 use Error;
 use Exception;
@@ -38,8 +40,11 @@ class BookController extends AbstractController
       $page = (int) $request->get('page') ?? 1;
 
       $booksResponse = $getBooksService->execute();
+
       $paginatorResponse = $booksResponse['pagination'];
+
       $paginator = new Paginator($paginatorResponse['totalFound'], $paginatorResponse['dataPerPage'], $page);
+
       $apiResponse->setData($booksResponse['data']);
 
       foreach ($paginator->getPaginationData() as $key => $value) {
@@ -60,28 +65,29 @@ class BookController extends AbstractController
   /**
    * @Route("/books/search/", name="books_search", methods={"GET","POST"})
    */
-  public function search(GetBooksService $getBooksService, Request $request): Response
+  public function search(SearchBooksService $searchBooksService, Request $request): Response
   {
       $apiResponse = new ApiResponse();
       $response = new JsonResponse();
+      $searchCriteria = [];
 
       try {
           if ($request->getMethod() == 'POST') {
               $requestParams = json_decode($request->getContent(), true);
               $page = $requestParams['page'] ?? 1;
+              $searchCriteria = $requestParams;
 
           } else {
               $page = (int) $request->get('page') ?? 1;
           }
 
-          $getBooksRequest = new GetBooksRequest();
-          $getBooksResponse = $getBooksService->execute();
+          $searchBooksRequest = new SearchBooksRequest($searchCriteria);
+          $searchBooksResponse = $searchBooksService->execute($searchBooksRequest);
 
+          $paginator = new Paginator($searchBooksResponse['totalFound'], $searchBooksResponse['limit'], $page);
+          // $links = $paginator->getLinks($this->container->get('router'), 'books_search', $page);
 
-          $paginator = new Paginator($getReviewsResponse['totalFound'], $getReviewsResponse['size'], $page);
-          $links = $paginator->getLinks($this->container->get('router'), 'api_reviews_list', $urlQueryParams);
-
-          $apiResponse->setData($getBooksResponse['data']); //$getReviewsResponse['data']
+          $apiResponse->setData($searchBooksResponse['data']); //$getReviewsResponse['data']
 
           foreach ($paginator->getPaginationData() as $key => $value) {
               $apiResponse->setPagination($key, $value);

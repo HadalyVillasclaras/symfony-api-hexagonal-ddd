@@ -5,6 +5,7 @@ namespace App\MyDashboard\Books\Infrastructure;
 use App\MyDashboard\Books\Domain\Book;
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -61,102 +62,65 @@ class DoctrineBookRepository extends ServiceEntityRepository implements BookRepo
         $this->entityManager->flush();
     }
 
-    public function findByCriteria(Criteria $searchCriteria): ?array
+    public function findByCriteria(array $criteria, int $limit = 10, int $offset = 0): array
     {
-        $result = [
-            'totalFound' => 0,
-            'start' => 0,
-            'size' => 0,
-            'data' => []
-        ];
+        $qb = $this->createQueryBuilder('b');
 
-        $queryBuilder = $this->entityManager
-            ->createQueryBuilder()
-            ->select('book')
-            ->from('App\MyDashboard\Books\Domain\Book', 'book');
-
-        // Join only entities/tables needed to improve performance
-        $entitiesToJoin = [];
-
-        if (strpos($searchCriteria->getOrder()->getOrderBy(), ".") !== false) {
-            $entityToJoin = substr($searchCriteria->getOrder()->getOrderBy(), 0, strpos($searchCriteria->getOrder()->getOrderBy(), "."));
-            if (!in_array($entityToJoin, $entitiesToJoin)) {
-                $entitiesToJoin[] = substr($searchCriteria->getOrder()->getOrderBy(), 0, strpos($searchCriteria->getOrder()->getOrderBy(), "."));
-            }
+        foreach ($criteria as $field => $value) {
+            $qb->andWhere('b.' . $field . ' LIKE :' . $field)
+                ->setParameter($field, '%' . $value . '%');
         }
 
-        foreach ($searchCriteria->getFilterGroups() as $filters) {
-            foreach ($filters as $filter) {
-                if (strpos($filter->getField(), ".") !== false) {
-                    $entityToJoin = substr($filter->getField(), 0, strpos($filter->getField(), "."));
-                    if (!in_array($entityToJoin, $entitiesToJoin)) {
-                        $entitiesToJoin[] = substr($filter->getField(), 0, strpos($filter->getField(), "."));
-                    }
-                }
-            }
-        }
-
-        if (!empty($entitiesToJoin)) {
-            $queryBuilder->distinct();
-        }
-
-        if ($searchCriteria->getAggregations()->count() > 0) {
-            foreach ($searchCriteria->getAggregations() as $agg) {
-                if (strpos($agg->getField(), ".") !== false) {
-                    $entityToJoin = substr($agg->getField(), 0, strpos($agg->getField(), "."));
-                    if (!in_array($entityToJoin, $entitiesToJoin)) {
-                        $entitiesToJoin[] = substr($agg->getField(), 0, strpos($agg->getField(), "."));
-                    }
-                }
-            }
-        }
-
-        $queryBuilder = (new CriteriaConverter($queryBuilder, 'book'))
-            ->setCriteria($searchCriteria)
-            ->convert();
-
-        $query = $queryBuilder->getQuery();
-
-        $results = $query->getResult();
-        $start = $query->getFirstResult();
-        $size = $query->getMaxResults();
-
+        $query = $qb->getQuery();
         $paginator = new Paginator($query);
 
-        $totalResults = $paginator->count();
+        $totalItems = count($paginator);
+        $pagesCount = ceil($totalItems / $limit);
 
-        $result['data'] = $results;
-        $result['start'] = $start;
-        $result['size'] = $size;
-        $result['totalFound'] = $totalResults;
+        $paginator
+            ->getQuery()
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
 
-        return $result;
+        $books = [];
+        foreach ($paginator as $book) {
+            $books[] = $book;
+        }
+
+        return [
+            "totalFound" => $totalItems,
+            "limit" => $limit,
+            "data" => $books
+        ];
     }
 
 
+  
 
-//    /**
-//     * @return Book[] Returns an array of Book objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?Book
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+
+    //    /**
+    //     * @return Book[] Returns an array of Book objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('b.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Book
+    //    {
+    //        return $this->createQueryBuilder('b')
+    //            ->andWhere('b.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

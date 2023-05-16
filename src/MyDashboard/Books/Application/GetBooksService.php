@@ -16,7 +16,8 @@ class GetBooksService
 
   public function execute()
   {
-    $books = $this->bookRepository->findBy(10, );
+    $books = $this->bookRepository->findAll();
+
     $bookResponse['data'] = $books;
     $bookResponse['pagination'] = [
       'totalFound' => count($bookResponse['data']),
