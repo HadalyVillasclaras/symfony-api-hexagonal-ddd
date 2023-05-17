@@ -14,5 +14,5 @@ interface BookRepositoryInterface
 
     public function delete(Book $book): void;
 
-    public function findByCriteria(array $criteria, int $limit): array;
+    public function findByCriteria(array $criteria, int $limit,  int $offset): array;
 }

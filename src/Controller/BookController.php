@@ -8,7 +8,6 @@ use App\MyDashboard\Books\Application\DeleteBookRequest;
 use App\MyDashboard\Books\Application\DeleteBookService;
 use App\MyDashboard\Books\Application\GetBookRequest;
 use App\MyDashboard\Books\Application\GetBookService;
-use App\MyDashboard\Books\Application\GetBooksRequest;
 use App\MyDashboard\Books\Application\GetBooksService;
 use App\MyDashboard\Books\Application\SearchBooksRequest;
 use App\MyDashboard\Books\Application\SearchBooksService;
@@ -66,14 +65,12 @@ class BookController extends AbstractController
           if ($request->getMethod() == 'POST') {
               $requestParams = json_decode($request->getContent(), true);
               $page = isset($requestParams['page']) ? (int) $requestParams['page'] : 1; 
-              $searchCriteria = $requestParams;
-
           } else {
               $page = isset($requestParams['page']) ? (int) $requestParams['page'] : 1; 
               $searchCriteria = $request->query->all();
           }
 
-          $searchBooksRequest = new SearchBooksRequest($searchCriteria);
+          $searchBooksRequest = new SearchBooksRequest($searchCriteria, $page);
           $searchBooksResponse = $searchBooksService->execute($searchBooksRequest);
 
           $paginator = new Paginator($searchBooksResponse['totalFound'], $searchBooksResponse['limit'], $page);

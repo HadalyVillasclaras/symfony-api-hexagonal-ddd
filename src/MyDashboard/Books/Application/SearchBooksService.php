@@ -16,8 +16,11 @@ class SearchBooksService
     public function execute(SearchBooksRequest $searchBooksRequest)
     {
         $searchCriteria = $searchBooksRequest->getSearchCriteria();
+        $page = $searchBooksRequest->getPage();
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
 
-        $booksResponse = $this->bookRepository->findByCriteria($searchCriteria, 10);
+        $booksResponse = $this->bookRepository->findByCriteria($searchCriteria, $limit, $offset);
 
         return $booksResponse;
     }
