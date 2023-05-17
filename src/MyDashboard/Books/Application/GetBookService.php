@@ -3,6 +3,7 @@
 namespace App\MyDashboard\Books\Application;
 
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
+use Exception;
 
 class GetBookService 
 {
@@ -16,6 +17,10 @@ class GetBookService
   public function execute(GetBookRequest $getBookRequest)
   {
     $book = $this->bookRepository->findOneBy(['id' => $getBookRequest->getId()]);
+
+    if ($book === null) {
+      throw new Exception("Book not found");
+    }
     
     return $book;
   }

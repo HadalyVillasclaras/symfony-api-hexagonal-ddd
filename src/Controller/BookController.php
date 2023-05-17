@@ -221,7 +221,7 @@ class BookController extends AbstractController
         $updateBookRequestParams['url'],
         $updateBookRequestParams['description']
       );
-  
+      
       $book = $updateBookService->execute($updateBookRequest);
       $apiResponse->setData($book->__toArray());
       $response->setStatusCode(Response::HTTP_OK);

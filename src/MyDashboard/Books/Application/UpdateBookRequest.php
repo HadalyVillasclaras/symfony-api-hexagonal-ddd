@@ -76,7 +76,7 @@
         return $this->author;
     }
 
-    public function getYear(): ?string
+    public function getYear(): ?int
     {
         return $this->year;
     }
