@@ -64,11 +64,12 @@ class BookController extends AbstractController
       try {
           if ($request->getMethod() == 'POST') {
               $requestParams = json_decode($request->getContent(), true);
-              $page = isset($requestParams['page']) ? (int) $requestParams['page'] : 1; 
           } else {
-              $page = isset($requestParams['page']) ? (int) $requestParams['page'] : 1; 
               $searchCriteria = $request->query->all();
           }
+
+          $page = isset($requestParams['page']) ? (int) $requestParams['page'] : 1; 
+
 
           $searchBooksRequest = new SearchBooksRequest($searchCriteria, $page);
           $searchBooksResponse = $searchBooksService->execute($searchBooksRequest);

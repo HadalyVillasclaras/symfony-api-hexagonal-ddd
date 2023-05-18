@@ -2,16 +2,17 @@
 
 namespace App\MyDashboard\Shared\Domain\ValueObject;
 
-use App\MyDashboard\Shared\Domain\Dictionaries\LanguageCodes;
+use App\MyDashboard\Shared\Domain\Dictionaries\allowedLanguages;
 use App\MyDashboard\Shared\Domain\Exceptions\ValueObjects\InvalidLanguageException;
 use Exception;
+use InvalidArgumentException;
 
 class Language
 {
     private string $languageCode;
     private string $language;
 
-    private static $languageCodes = [
+    private static $allowedLanguages = [
         "es" => "Spanish",
         "en" => "English",
         "fr" => "French",
@@ -23,27 +24,22 @@ class Language
 
     public function __construct(string $languageCode)
     {
-        if (!$this->checkIfExists($languageCode)) {
-            throw new Exception();
-        }
+        $this->checkIfExists($languageCode);
+
 
         $this->languageCode = $languageCode;
+        $this->language = self::$allowedLanguages[$languageCode];
+
     }
 
-    private function checkIfExists(string $languageCode): ?bool
+    private function checkIfExists(string $languageCode): void
     {
-        if (array_key_exists($languageCode, self::$languageCodes)) {
-            $this->language = self::$languageCodes[$languageCode];
+        if (!array_key_exists($languageCode, self::$allowedLanguages)) {
+            throw new InvalidArgumentException('Language does not exist');
         }
-
-        if ($this->language) {
-            return true;
-        }
-
-        return false;
     }
 
-    public function getLanguageCode(): ?string
+    public function getCode(): ?string
     {
         return $this->languageCode;
     }
