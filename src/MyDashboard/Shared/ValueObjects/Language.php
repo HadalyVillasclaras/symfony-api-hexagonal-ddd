@@ -4,7 +4,6 @@ namespace App\MyDashboard\Shared\Domain\ValueObject;
 
 use App\MyDashboard\Shared\Domain\Dictionaries\allowedLanguages;
 use App\MyDashboard\Shared\Domain\Exceptions\ValueObjects\InvalidLanguageException;
-use Exception;
 use InvalidArgumentException;
 
 class Language
@@ -25,7 +24,6 @@ class Language
     public function __construct(string $languageCode)
     {
         $this->checkIfExists($languageCode);
-
 
         $this->languageCode = $languageCode;
         $this->language = self::$allowedLanguages[$languageCode];

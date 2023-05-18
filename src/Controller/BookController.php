@@ -17,6 +17,7 @@ use App\MyDashboard\Shared\Utils\ApiResponse;
 use App\MyDashboard\Shared\Utils\Paginator;
 use Error;
 use Exception;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,42 +57,42 @@ class BookController extends AbstractController
    */
   public function search(SearchBooksService $searchBooksService, Request $request): Response
   {
-      $apiResponse = new ApiResponse();
-      $response = new JsonResponse();
-      $searchCriteria = [];
-      $page = 1;
+    $apiResponse = new ApiResponse();
+    $response = new JsonResponse();
+    $searchCriteria = [];
+    $page = 1;
 
-      try {
-          if ($request->getMethod() == 'POST') {
-              $requestParams = json_decode($request->getContent(), true);
-          } else {
-              $searchCriteria = $request->query->all();
-          }
-
-          $page = isset($requestParams['page']) ? (int) $requestParams['page'] : 1; 
-
-
-          $searchBooksRequest = new SearchBooksRequest($searchCriteria, $page);
-          $searchBooksResponse = $searchBooksService->execute($searchBooksRequest);
-
-          $paginator = new Paginator($searchBooksResponse['totalFound'], $searchBooksResponse['limit'], $page);
-
-          $apiResponse->setData($searchBooksResponse['data']);
-
-          foreach ($paginator->getPaginationData() as $key => $value) {
-              $apiResponse->setPagination($key, $value);
-          }
-
-          $response->setStatusCode(Response::HTTP_OK);
-        }catch(Exception $e){
-          $apiResponse->setError($e->getMessage(), $e->getCode());
-          $response->setStatusCode(Response::HTTP_BAD_REQUEST);
-      } catch (Error $e) {
-          $apiResponse->setError($e->getMessage(), $e->getCode());
-          $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+    try {
+      if ($request->getMethod() == 'POST') {
+        $requestParams = json_decode($request->getContent(), true);
+      } else {
+        $searchCriteria = $request->query->all();
       }
-      $response->setData($apiResponse->getApiResponse());
-      return $response;
+
+      $page = isset($requestParams['page']) ? (int) $requestParams['page'] : 1;
+
+
+      $searchBooksRequest = new SearchBooksRequest($searchCriteria, $page);
+      $searchBooksResponse = $searchBooksService->execute($searchBooksRequest);
+
+      $paginator = new Paginator($searchBooksResponse['totalFound'], $searchBooksResponse['limit'], $page);
+
+      $apiResponse->setData($searchBooksResponse['data']);
+
+      foreach ($paginator->getPaginationData() as $key => $value) {
+        $apiResponse->setPagination($key, $value);
+      }
+
+      $response->setStatusCode(Response::HTTP_OK);
+    } catch (Exception $e) {
+      $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+    } catch (Error $e) {
+      $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+    $response->setData($apiResponse->getApiResponse());
+    return $response;
   }
 
   /**
@@ -99,37 +100,37 @@ class BookController extends AbstractController
    */
   public function getById(GetBookService $geBookService, int $id): JsonResponse
   {
-      $apiResponse = new ApiResponse();
-      $response = new JsonResponse();
+    $apiResponse = new ApiResponse();
+    $response = new JsonResponse();
 
-      try {
-          $getBookRequest = new GetBookRequest($id);
-          $book = $geBookService->execute($getBookRequest);
-          $apiResponse->setData($book->__toArray());
-          $response->setStatusCode(Response::HTTP_OK);
-      }catch(Exception $e){
-          $apiResponse->setError($e->getMessage(), $e->getCode());
-          $response->setStatusCode(Response::HTTP_BAD_REQUEST);
-      } catch (Error $e) {
-          $apiResponse->setError($e->getMessage(), $e->getCode());
-          $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-      }
+    try {
+      $getBookRequest = new GetBookRequest($id);
+      $book = $geBookService->execute($getBookRequest);
+      $apiResponse->setData($book->__toArray());
+      $response->setStatusCode(Response::HTTP_OK);
+    } catch (Exception $e) {
+      $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+    } catch (Error $e) {
+      $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
 
-      $response->setData($apiResponse->getApiResponse());
-      return $response;
+    $response->setData($apiResponse->getApiResponse());
+    return $response;
   }
 
   /**
    * @Route("/books", name="books_create", methods={"POST"})
    */
-  public function create(Request $request, AddBookService $addBookService) 
+  public function create(Request $request, AddBookService $addBookService)
   {
     $apiResponse = new ApiResponse();
     $response = new JsonResponse();
 
     try {
       $requestParams = json_decode($request->getContent(), true);
-  
+
       $createBookRequestParams = [];
       $createBookRequestParams['title'] =  $requestParams['title'] ?? null;
       $createBookRequestParams['subtitle'] =  $requestParams['subtitle'] ?? null;
@@ -145,7 +146,14 @@ class BookController extends AbstractController
       $createBookRequestParams['isbn'] =  $requestParams['isbn'] ?? null;
       $createBookRequestParams['url'] =  $requestParams['url'] ?? null;
       $createBookRequestParams['description'] =  $requestParams['description'] ?? null;
-  
+
+      $requiredFields = ['title', 'author', 'year', 'language', 'pages'];
+      foreach ($requiredFields as $field) {
+        if (empty($createBookRequestParams[$field])) {
+          throw new InvalidArgumentException("The field $field is required and cannot be empty or null");
+        }
+      }
+
       $createBookRequest = new AddBookRequest(
         $createBookRequestParams['title'],
         $createBookRequestParams['subtitle'],
@@ -162,7 +170,7 @@ class BookController extends AbstractController
         $createBookRequestParams['url'],
         $createBookRequestParams['description']
       );
-  
+
       $book = $addBookService->execute($createBookRequest);
       $apiResponse->setData($book->__toArray());
       $response->setStatusCode(Response::HTTP_OK);
@@ -188,7 +196,7 @@ class BookController extends AbstractController
 
     try {
       $requestParams = json_decode($request->getContent(), true);
-  
+
       $updateBookRequestParams = [];
       $updateBookRequestParams['title'] =  $requestParams['title'] ?? null;
       $updateBookRequestParams['subtitle'] =  $requestParams['subtitle'] ?? null;
@@ -204,7 +212,7 @@ class BookController extends AbstractController
       $updateBookRequestParams['isbn'] =  $requestParams['isbn'] ?? null;
       $updateBookRequestParams['url'] =  $requestParams['url'] ?? null;
       $updateBookRequestParams['description'] =  $requestParams['description'] ?? null;
-  
+
       $updateBookRequest = new UpdateBookRequest(
         $id,
         $updateBookRequestParams['title'],
@@ -222,11 +230,10 @@ class BookController extends AbstractController
         $updateBookRequestParams['url'],
         $updateBookRequestParams['description']
       );
-      
+
       $book = $updateBookService->execute($updateBookRequest);
       $apiResponse->setData($book->__toArray());
       $response->setStatusCode(Response::HTTP_OK);
-
     } catch (Exception $e) {
       $apiResponse->setError($e->getMessage(), $e->getCode());
       $response->setStatusCode(Response::HTTP_BAD_REQUEST);
@@ -245,22 +252,22 @@ class BookController extends AbstractController
    */
   public function delete(DeleteBookService $deleteBookService, int $id): Response
   {
-      $apiResponse = new ApiResponse();
-      $response = new JsonResponse();
+    $apiResponse = new ApiResponse();
+    $response = new JsonResponse();
 
-      try {
-          $deleteBookRequest = new DeleteBookRequest($id);
-          $deleteBookService->execute($deleteBookRequest);
-          $response->setStatusCode(Response::HTTP_OK);
-      } catch (Exception $e) {
-          $apiResponse->setError($e->getMessage(), $e->getCode());
-          $response->setStatusCode(Response::HTTP_BAD_REQUEST);
-      } catch (Error $e) {
-          $apiResponse->setError($e->getMessage(), $e->getCode());
-          $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-      }
+    try {
+      $deleteBookRequest = new DeleteBookRequest($id);
+      $deleteBookService->execute($deleteBookRequest);
+      $response->setStatusCode(Response::HTTP_OK);
+    } catch (Exception $e) {
+      $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+    } catch (Error $e) {
+      $apiResponse->setError($e->getMessage(), $e->getCode());
+      $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
 
-      $response->setData($apiResponse->getApiResponse());
-      return $response;
+    $response->setData($apiResponse->getApiResponse());
+    return $response;
   }
 }

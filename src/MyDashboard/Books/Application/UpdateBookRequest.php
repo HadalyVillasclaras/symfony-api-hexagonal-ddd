@@ -21,7 +21,7 @@
     private $description;
 
     public function __construct(
-      ?int $id,
+      int $id,
       ?string $title,
       ?string $subtitle,
       ?string $author,
@@ -56,7 +56,7 @@
 
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

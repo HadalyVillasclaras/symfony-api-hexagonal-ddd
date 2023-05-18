@@ -2,7 +2,12 @@
 
 namespace App\MyDashboard\Books\Domain;
 
+use App\MyDashboard\Shared\Domain\ValueObject\BookCategory;
+use App\MyDashboard\Shared\Domain\ValueObject\Country;
+use App\MyDashboard\Shared\Domain\ValueObject\Language;
+use App\MyDashboard\Shared\Domain\ValueObject\Price;
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
 
 //CREATED AT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -89,37 +94,35 @@ class Book
     private $description;
 
     public function __construct(
-        ?string $title,
+        string $title,
         ?string $subtitle,
-        ?string $author,
-        ?int $year,
-        ?string $category,
-        ?string $language,
-        ?string $country,
-        ?int $pages,
-        ?float $price,
+        string $author,
+        int $year,
+        ?BookCategory $category,
+        Language $language,
+        Country $country,
+        int $pages,
+        ?Price $price,
         ?string $link,
         ?string $status,
         ?string $isbn,
         ?string $url,
         ?string $description
       ) {
-  
         $this->title = $title;
         $this->subtitle = $subtitle;
         $this->author = $author;
         $this->year = $year;
-        $this->category = $category;
-        $this->language = $language;
-        $this->country = $country;
+        $this->category = $category->getCategory();
+        $this->language = $language->getCode();
+        $this->country = $country->getCountry();
         $this->pages = $pages;
-        $this->price = $price;
+        $this->price = $price->getValue();
         $this->link = $link;
         $this->status = $status;
         $this->isbn = $isbn;
         $this->url = $url;
         $this->description = $description;
-  
       }
 
 
@@ -144,12 +147,12 @@ class Book
         ];
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -202,21 +205,21 @@ class Book
         return $this->category;
     }
 
-    public function setCategory(?string $category): self
+    public function setCategory(BookCategory $category): self
     {
-        $this->category = $category;
+        $this->category = $category->getCategory();
 
         return $this;
     }
 
-    public function getLanguage(): ?string
+    public function getLanguage(): string
     {
         return $this->language;
     }
 
-    public function setLanguage(string $language): self
+    public function setLanguage(Language $language): self
     {
-        $this->language = $language;
+        $this->language = $language->getCode();
 
         return $this;
     }
@@ -226,9 +229,9 @@ class Book
         return $this->country;
     }
 
-    public function setCountry(?string $country): self
+    public function setCountry(Country $country): self
     {
-        $this->country = $country;
+        $this->country = $country->getCountry();
 
         return $this;
     }
@@ -247,12 +250,12 @@ class Book
 
     public function getPrice(): ?float
     {
-        return $this->price;
+        return round($this->price, 2);
     }
 
-    public function setPrice(?float $price): self
+    public function setPrice(Price $price): self
     {
-        $this->price = $price;
+        $this->price = $price->getValue();
 
         return $this;
     }

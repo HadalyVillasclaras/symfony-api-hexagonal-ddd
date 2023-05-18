@@ -20,23 +20,21 @@ class AddBookRequest
     private $description;
 
     public function __construct(
-        ?string $title,
+        string $title,
         ?string $subtitle,
-        ?string $author,
-        ?int $year,
+        string $author,
+        int $year,
         ?string $category,
-        ?string $language,
+        string $language,
         ?string $country,
-        ?int $pages,
+        int $pages,
         ?float $price,
         ?string $link,
         ?string $status,
         ?string $isbn,
         ?string $url,
         ?string $description
-
     ) {
-
         $this->title = $title;
         $this->subtitle = $subtitle;
         $this->author = $author;

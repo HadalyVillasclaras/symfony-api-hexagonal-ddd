@@ -4,7 +4,10 @@ namespace App\MyDashboard\Books\Application;
 
 use App\MyDashboard\Books\Domain\Book;
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
+use App\MyDashboard\Shared\Domain\ValueObject\BookCategory;
+use App\MyDashboard\Shared\Domain\ValueObject\Country;
 use App\MyDashboard\Shared\Domain\ValueObject\Language;
+use App\MyDashboard\Shared\Domain\ValueObject\Price;
 
 class AddBookService
 {
@@ -17,21 +20,16 @@ class AddBookService
 
   public function execute(AddBookRequest $addBookRequest)
   {
-
-    $language = (!empty($addBookRequest->getLanguage()))
-      ? new Language($addBookRequest->getLanguage())
-      : null;
-
     $book = new Book(
       $addBookRequest->getTitle(),
       $addBookRequest->getSubtitle(),
       $addBookRequest->getAuthor(),
       $addBookRequest->getYear(),
-      $addBookRequest->getCategory(),
-      $language->getLanguage(),
-      $addBookRequest->getCountry(),
+      new BookCategory($addBookRequest->getCategory()),
+      new Language($addBookRequest->getLanguage()),
+      new Country($addBookRequest->getCountry()),
       $addBookRequest->getPages(),
-      $addBookRequest->getPrice(),
+      new Price($addBookRequest->getPrice()),
       $addBookRequest->getLink(),
       $addBookRequest->getStatus(),
       $addBookRequest->getIsbn(),
