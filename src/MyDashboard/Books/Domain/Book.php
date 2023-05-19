@@ -2,11 +2,12 @@
 
 namespace App\MyDashboard\Books\Domain;
 
-use App\MyDashboard\Shared\Domain\ValueObject\BookCategory;
-use App\MyDashboard\Shared\Domain\ValueObject\Country;
-use App\MyDashboard\Shared\Domain\ValueObject\Language;
-use App\MyDashboard\Shared\Domain\ValueObject\Price;
+use App\MyDashboard\Shared\ValueObjects\BookCategory;
+use App\MyDashboard\Shared\ValueObjects\Country;
+use App\MyDashboard\Shared\ValueObjects\Language;
+use App\MyDashboard\Shared\ValueObjects\Price;
 use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -162,7 +163,7 @@ class Book
         ];
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -335,12 +336,12 @@ class Book
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }

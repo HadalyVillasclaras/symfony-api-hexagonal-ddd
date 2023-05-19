@@ -1,6 +1,6 @@
 <?php
 
-namespace App\MyDashboard\Shared\Domain\ValueObject;
+namespace App\MyDashboard\Shared\ValueObjects;
 
 use InvalidArgumentException;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\MyDashboard\Shared\Domain\ValueObject;
+namespace App\MyDashboard\Shared\ValueObjects;
 
 use App\MyDashboard\Shared\Domain\Dictionaries\allowedLanguages;
 use App\MyDashboard\Shared\Domain\Exceptions\ValueObjects\InvalidLanguageException;
