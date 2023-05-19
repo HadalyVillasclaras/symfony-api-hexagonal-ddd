@@ -47,4 +47,15 @@ class Country
   {
     return $this->country;
   }
+
+  public static function getAllowedCountriesCodes(): array
+{
+    return array_keys(self::$allowedCountries);
+}
+
+public static function getAllowedCountries(): array
+{
+    return self::$allowedCountries;
+}
+
 }
