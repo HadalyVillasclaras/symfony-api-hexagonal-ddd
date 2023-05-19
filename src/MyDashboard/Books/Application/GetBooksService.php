@@ -18,6 +18,7 @@ class GetBooksService
   {
     $books = $this->bookRepository->findAll();
   
+    print_r($books);
     return $books;
   }
   

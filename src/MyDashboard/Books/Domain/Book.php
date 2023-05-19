@@ -6,10 +6,13 @@ use App\MyDashboard\Shared\Domain\ValueObject\BookCategory;
 use App\MyDashboard\Shared\Domain\ValueObject\Country;
 use App\MyDashboard\Shared\Domain\ValueObject\Language;
 use App\MyDashboard\Shared\Domain\ValueObject\Price;
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use InvalidArgumentException;
 
-//CREATED AT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 /**
  * @ORM\Entity(repositoryClass=DoctrineBookRepository::class)
@@ -93,6 +96,18 @@ class Book
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    private ?\DateTimeInterface $createdAt = null;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="update")
+     */
+    private ?\DateTimeInterface $updatedAt = null;
+
     public function __construct(
         string $title,
         ?string $subtitle,
@@ -123,6 +138,8 @@ class Book
         $this->isbn = $isbn;
         $this->url = $url;
         $this->description = $description;
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
       }
 
 
@@ -143,7 +160,9 @@ class Book
             'status' => $this->getStatus(),
             'isbn' => $this->getIsbn(),
             'url' => $this->getUrl(),
-            'description' => $this->getDescription()
+            'description' => $this->getDescription(),
+            'createdAt' => $this->getCreatedAt(),
+            'updatedAt' => $this->getUpdatedAt(),
         ];
     }
 
@@ -318,5 +337,15 @@ class Book
         $this->description = $description;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?DateTimeImmutable
+    {
+        return $this->updatedAt;
     }
 }
