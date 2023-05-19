@@ -26,6 +26,6 @@ test-results/
 
 .phpunit.cache
 
-App/Repository/
+Entity/
 
-App/Entity/
+Repository/
