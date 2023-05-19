@@ -5,7 +5,7 @@ namespace App\MyDashboard\Books\Application;
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
 use Exception;
 
-class GetBookService 
+class GetBookByIdService 
 {
   protected $bookRepository;
 
@@ -14,9 +14,9 @@ class GetBookService
       $this->bookRepository = $bookRepository;
   }
 
-  public function execute(GetBookRequest $getBookRequest)
+  public function execute(GetBookByIdRequest $GetBookByIdRequest)
   {
-    $book = $this->bookRepository->findOneBy(['id' => $getBookRequest->getId()]);
+    $book = $this->bookRepository->findOneBy(['id' => $GetBookByIdRequest->getId()]);
 
     if ($book === null) {
       throw new Exception("Book not found");

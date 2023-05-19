@@ -2,7 +2,7 @@
 
 namespace App\MyDashboard\Books\Application;
 
-class GetBookRequest
+class GetBookByIdRequest
 {
   private $id;
     

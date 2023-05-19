@@ -6,8 +6,8 @@ use App\MyDashboard\Books\Application\AddBookRequest;
 use App\MyDashboard\Books\Application\AddBookService;
 use App\MyDashboard\Books\Application\DeleteBookRequest;
 use App\MyDashboard\Books\Application\DeleteBookService;
-use App\MyDashboard\Books\Application\GetBookRequest;
-use App\MyDashboard\Books\Application\GetBookService;
+use App\MyDashboard\Books\Application\GetBookByIdRequest;
+use App\MyDashboard\Books\Application\GetBookByIdService;
 use App\MyDashboard\Books\Application\GetBooksService;
 use App\MyDashboard\Books\Application\SearchBooksRequest;
 use App\MyDashboard\Books\Application\SearchBooksService;
@@ -98,14 +98,14 @@ class BookController extends AbstractController
   /**
    * @Route("books/{id}", name="books_get", methods={"GET"})
    */
-  public function getById(GetBookService $geBookService, int $id): JsonResponse
+  public function getById(GetBookByIdService $geBookService, int $id): JsonResponse
   {
     $apiResponse = new ApiResponse();
     $response = new JsonResponse();
 
     try {
-      $getBookRequest = new GetBookRequest($id);
-      $book = $geBookService->execute($getBookRequest);
+      $GetBookByIdRequest = new GetBookByIdRequest($id);
+      $book = $geBookService->execute($GetBookByIdRequest);
       $apiResponse->setData($book->__toArray());
       $response->setStatusCode(Response::HTTP_OK);
     } catch (Exception $e) {

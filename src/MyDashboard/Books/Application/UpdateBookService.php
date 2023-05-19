@@ -3,10 +3,10 @@
 namespace App\MyDashboard\Books\Application;
 
 use App\MyDashboard\Books\Domain\BookRepositoryInterface;
-use App\MyDashboard\Shared\Domain\ValueObject\BookCategory;
-use App\MyDashboard\Shared\Domain\ValueObject\Country;
-use App\MyDashboard\Shared\Domain\ValueObject\Language;
-use App\MyDashboard\Shared\Domain\ValueObject\Price;
+use App\MyDashboard\Shared\ValueObjects\BookCategory;
+use App\MyDashboard\Shared\ValueObjects\Country;
+use App\MyDashboard\Shared\ValueObjects\Language;
+use App\MyDashboard\Shared\ValueObjects\Price;
 use Exception;
 
 class UpdateBookService
