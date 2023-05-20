@@ -22,6 +22,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/MyDashboard/Books/Domain'
                 prefix: 'App\MyDashboard\Books\Domain'
                 alias: Books
+            User:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/MyDashboard/User/Domain'
+                prefix: 'App\MyDashboard\User\Domain'
+                alias: User
 when@test:
     doctrine:
         dbal:
