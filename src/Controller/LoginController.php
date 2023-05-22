@@ -17,7 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class LoginController extends AbstractController
 {
-
      /**
      * @Route("/users/login", name="users_login", methods={"POST"})
      */
