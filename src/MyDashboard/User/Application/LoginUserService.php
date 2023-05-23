@@ -19,8 +19,12 @@ class LoginUserService
     $user = $this->userRepository->findOneBy(['email' => $loginUserRequest->getEmail()]);
 
     if ($user === null) {
-      throw new Exception("User not found");
+      throw new Exception("User not found"); //login exception
     }
+
+    // check if rquest pass and user pass are equal. 
+
+    // jwt
     
     return $user;
   }
